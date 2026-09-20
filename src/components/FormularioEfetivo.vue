@@ -143,7 +143,28 @@ async function onSubmit(e: Event) {
         <input name="nome" :class="classeInput" v-model="nome" :readonly="militarId !== null" placeholder="ex.: João Almeida da Silva" required />
       </Campo>
       <Campo rotulo="Posto/Graduação">
-        <input name="postoGraduacao" :class="classeInput" v-model="posto" :readonly="militarId !== null" placeholder="ex.: 3º SGT" />
+        <div v-if="militarId !== null" class="rounded-lg border border-campo-200 bg-campo-50 px-3 py-2 text-sm text-campo-900">
+          {{ posto || "—" }}
+        </div>
+        <select v-else name="postoGraduacao" :class="classeInput" v-model="posto">
+          <option value="">Selecione…</option>
+          <option value="Soldado">Soldado</option>
+          <option value="Cabo">Cabo</option>
+          <option value="3º Sargento">3º Sargento</option>
+          <option value="2º Sargento">2º Sargento</option>
+          <option value="1º Sargento">1º Sargento</option>
+          <option value="Subtenente">Subtenente</option>
+          <option value="2º Tenente">2º Tenente</option>
+          <option value="1º Tenente">1º Tenente</option>
+          <option value="Capitão">Capitão</option>
+          <option value="Major">Major</option>
+          <option value="Tenente-Coronel">Tenente-Coronel</option>
+          <option value="Coronel">Coronel</option>
+          <option value="Funcionário Civil">Funcionário Civil</option>
+          <option value="Médico">Médico</option>
+          <option value="Técnico de Enfermagem">Técnico de Enfermagem</option>
+          <option value="Enfermeiro">Enfermeiro</option>
+        </select>
       </Campo>
     </div>
     <div class="grid gap-4 sm:grid-cols-2">
