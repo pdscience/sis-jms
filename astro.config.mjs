@@ -7,5 +7,8 @@ export default defineConfig({
   output: "server",
   adapter: node({ mode: "standalone" }),
   integrations: [vue()],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    optimizeDeps: { include: ["@nanostores/vue", "nanostores", "@nanostores/persistent"] },
+  },
 });
