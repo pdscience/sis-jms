@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.vue",
     "**/*.astro",
-    ".astro/**/*.ts"
+    ".astro/**/*.ts",
+    "./worker-configuration.d.ts"
   ],
   "exclude": [
     "node_modules"

@@ -6,12 +6,13 @@
     "build:css": "node scripts/build-css.mjs",
     "prebuild": "npm run build:css",
     "build": "astro build",
-    "start": "node ./dist/server/entry.mjs",
+    "start": "astro preview --host",
     "lint": "eslint .",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/node": "^11.1.6",
+    "@astrojs/cloudflare": "^14.3.2",
     "@astrojs/vue": "^7.0.3",
     "@insforge/sdk": "^1.5.2",
     "@nanostores/persistent": "^1.3.5",
@@ -21,7 +22,8 @@
     "dotenv": "17.3.1",
     "nanostores": "^1.5.3",
     "pdf-lib": "^1.17.1",
-    "vue": "^3.5.43"
+    "vue": "^3.5.43",
+    "wrangler": "^4.135.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
