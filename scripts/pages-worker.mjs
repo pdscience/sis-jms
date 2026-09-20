@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, renameSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 
 /* Monta o layout que o Cloudflare Pages entende (modo avançado):
    dist/_worker.js/index.js = worker SSR + dist/_routes.json.
@@ -23,4 +23,8 @@ writeFileSync(
     exclude: ["/_astro/*", "/estilos.css", "/favicon.ico", "/.assetsignore"],
   }),
 );
+// Pages serve estático da raiz do output: espelha dist/client/* em dist/
+for (const entry of readdirSync("dist/client")) {
+  cpSync(`dist/client/${entry}`, `dist/${entry}`, { recursive: true });
+}
 console.log("pages-worker: dist/_worker.js + _routes.json prontos.");
