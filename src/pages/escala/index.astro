@@ -1,0 +1,24 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import EscalaView from "../../components/EscalaView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+
+function segundaAtualISO(): string {
+  const agora = new Date();
+  const dia = (agora.getDay() + 6) % 7;
+  const segunda = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() - dia);
+  const a = String(segunda.getFullYear()).padStart(4, "0");
+  const m = String(segunda.getMonth() + 1).padStart(2, "0");
+  const d = String(segunda.getDate()).padStart(2, "0");
+  return `${a}-${m}-${d}`;
+}
+
+const bruto = (Astro.url.searchParams.get("semana") ?? "").trim();
+const semana = /^\d{4}-\d{2}-\d{2}$/.test(bruto) ? bruto : segundaAtualISO();
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <EscalaView client:load semana={semana} />
+</AppLayout>

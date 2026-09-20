@@ -17,6 +17,8 @@ const ITENS: Item[] = [
   { href: "/junta", rotulo: "Avaliação médica", icone: "prancheta", papeis: ["admin", "medico"], grupo: "Fluxo da Junta" },
   { href: "/prazos", rotulo: "Prazos e agregados", icone: "calendario", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Fluxo da Junta" },
   { href: "/atas", rotulo: "Atas e laudos", icone: "lista", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Publicações" },
+  { href: "/efetivo", rotulo: "Efetivo", icone: "usuario", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Efetivo" },
+  { href: "/escala", rotulo: "Escala semanal", icone: "calendario", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Efetivo" },
   { href: "/relatorios", rotulo: "Relatórios P1", icone: "balanco", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Publicações" },
   { href: "/auditoria", rotulo: "Trilha de auditoria", icone: "trilha", papeis: ["admin"], grupo: "Administração" },
   { href: "/usuarios", rotulo: "Usuários e perfis", icone: "usuario", papeis: ["admin"], grupo: "Administração" },
