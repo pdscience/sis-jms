@@ -6,3 +6,4 @@ dist/
 !.env.example
 .insforge/
 public/estilos.css
+tsconfig.tsbuildinfo
