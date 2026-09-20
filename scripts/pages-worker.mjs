@@ -17,6 +17,10 @@ renameSync(`${DST}/entry.mjs`, `${DST}/index.js`);
 rmSync(`${DST}/wrangler.json`, { force: true }); // só faz sentido p/ `wrangler deploy`
 writeFileSync(
   "dist/_routes.json",
-  JSON.stringify({ version: 1, include: ["/*"], exclude: [] }),
+  JSON.stringify({
+    version: 1,
+    include: ["/*"],
+    exclude: ["/_astro/*", "/estilos.css", "/favicon.ico", "/.assetsignore"],
+  }),
 );
 console.log("pages-worker: dist/_worker.js + _routes.json prontos.");
