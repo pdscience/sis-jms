@@ -7,3 +7,4 @@ dist/
 .insforge/
 public/estilos.css
 tsconfig.tsbuildinfo
+.wrangler/
