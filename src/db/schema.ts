@@ -132,3 +132,14 @@ export type AuditoriaRow = {
   ip: string | null;
   criadoEm: string;
 };
+
+export type Setor = { id: number; nome: string; descricao: string | null; ativo: boolean };
+export type Efetivo = {
+  id: number; militarId: number | null; nome: string; postoGraduacao: string | null;
+  funcao: string | null; telefone: string | null; ativo: boolean;
+  criadoEm: string; atualizadoEm: string;
+};
+export type Escala = {
+  id: number; semana: string; dia: number; turno: string; setorId: number;
+  efetivoId: number; observacao: string | null; criadoPor: number | null; criadoEm: string;
+};

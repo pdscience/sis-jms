@@ -868,4 +868,10 @@ async function executar() {
   }
 }
 
+const SETORES_PADRAO = ["Recepção", "Secretaria", "Sala Médica", "Arquivo", "Perícia", "Direção"];
+export async function ensureSetores(): Promise<void> {
+  if (await contar("setores") > 0) return;
+  await inserirVarios("setores", SETORES_PADRAO.map((nome) => ({ nome })));
+}
+
 
