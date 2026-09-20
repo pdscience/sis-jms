@@ -105,6 +105,15 @@ export async function inserirVarios<T>(table: string, linhas: Record<string, unk
   return ((data ?? []) as Record<string, unknown>[]).map((r) => camelRow<T>(r));
 }
 
+/** Delete por igualdade com retorno das linhas removidas. Erro se 0 linhas. */
+export async function remover<T>(table: string, coluna: string, valor: unknown): Promise<T[]> {
+  const { data, error } = await base(table).delete().eq(toSnake(coluna), valor as never).select();
+  if (error) throw new Error(`InsForge delete ${table}: ${msg(error)}`);
+  const linhas = ((data ?? []) as Record<string, unknown>[]).map((r) => camelRow<T>(r));
+  if (!linhas.length) throw new Error(`InsForge delete ${table}: nenhum registro encontrado.`);
+  return linhas;
+}
+
 /** Contagem exata de linhas. */
 export async function contar(table: string): Promise<number> {
   const { count, error } = await base(table).select("id", { count: "exact" }).limit(1);
