@@ -6,6 +6,7 @@
     "build:css": "node scripts/build-css.mjs",
     "prebuild": "npm run build:css",
     "build": "astro build",
+    "postbuild": "node scripts/pages-worker.mjs",
     "start": "astro preview --host",
     "lint": "eslint .",
     "typecheck": "astro check",
