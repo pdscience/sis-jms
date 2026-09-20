@@ -25,10 +25,9 @@ export async function salvarEfetivo(formData: FormData): Promise<ResultadoAcao> 
   const militarId = numero(formData, "militarId");
   if (militarId && militarId > 0) {
     const militar = await um<Militar>("militares", "id", militarId);
-    if (militar) {
-      nome = militar.nome;
-      postoGraduacao = militar.postoGraduacao;
-    }
+    if (!militar) return { ok: false, erro: "Policial militar não encontrado." };
+    nome = militar.nome;
+    postoGraduacao = militar.postoGraduacao;
   }
   if (!nome) return { ok: false, erro: "Nome é obrigatório." };
 
@@ -59,7 +58,7 @@ export async function salvarEfetivo(formData: FormData): Promise<ResultadoAcao> 
 
   const novo = await inserir<Efetivo>("efetivo", dados);
   await registrarAuditoria(operador, {
-    acao: "CADASTRAR_EFETIVO", entidade: "efetivo", entidadeId: novo.id,
+      acao: "REGISTRAR_EFETIVO", entidade: "efetivo", entidadeId: novo.id,
     resumo: `${novo.nome} incluído no efetivo`,
     detalhes: dados, ip: await ipAtual(),
   });
@@ -77,7 +76,7 @@ export async function statusEfetivo(id: number, ativo: boolean): Promise<Resulta
   const atualizado = atualizados[0];
   if (!atualizado) return { ok: false, erro: "Registro do efetivo não encontrado." };
   await registrarAuditoria(operador, {
-    acao: ativo ? "ATIVAR_EFETIVO" : "DESATIVAR_EFETIVO",
+    acao: "STATUS_EFETIVO",
     entidade: "efetivo", entidadeId: id,
     resumo: `${atualizado.nome} ${ativo ? "ativado" : "desativado"} no efetivo`,
     ip: await ipAtual(),
@@ -97,7 +96,7 @@ export async function salvarSetor(formData: FormData): Promise<ResultadoAcao> {
     const atualizado = atualizados[0];
     if (!atualizado) return { ok: false, erro: "Setor não encontrado." };
     await registrarAuditoria(operador, {
-      acao: "EDITAR_SETOR", entidade: "setor", entidadeId: atualizado.id,
+      acao: "SETOR_EDITAR", entidade: "setor", entidadeId: atualizado.id,
       resumo: `Setor ${atualizado.nome} atualizado`,
       detalhes: dados, ip: await ipAtual(),
     });
@@ -106,7 +105,7 @@ export async function salvarSetor(formData: FormData): Promise<ResultadoAcao> {
 
   const novo = await inserir<Setor>("setores", dados);
   await registrarAuditoria(operador, {
-    acao: "CRIAR_SETOR", entidade: "setor", entidadeId: novo.id,
+      acao: "SETOR_CRIAR", entidade: "setor", entidadeId: novo.id,
     resumo: `Setor ${novo.nome} criado`,
     detalhes: dados, ip: await ipAtual(),
   });
@@ -119,7 +118,7 @@ export async function statusSetor(id: number, ativo: boolean): Promise<Resultado
   const atualizado = atualizados[0];
   if (!atualizado) return { ok: false, erro: "Setor não encontrado." };
   await registrarAuditoria(operador, {
-    acao: ativo ? "ATIVAR_SETOR" : "DESATIVAR_SETOR",
+    acao: "SETOR_EDITAR",
     entidade: "setor", entidadeId: id,
     resumo: `Setor ${atualizado.nome} ${ativo ? "ativado" : "desativado"}`,
     ip: await ipAtual(),
@@ -139,16 +138,38 @@ export async function adicionarEscala(formData: FormData): Promise<ResultadoAcao
   if (!semana || dia === null || !turno || !setorId || !efetivoId) {
     return { ok: false, erro: "Informe semana, dia, turno, setor e pessoa." };
   }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(semana)) {
+    return { ok: false, erro: "Semana inválida (use YYYY-MM-DD, uma segunda-feira)." };
+  }
+  const [ano, mes, diaMes] = semana.split("-").map(Number);
+  const data = new Date(Date.UTC(ano, mes - 1, diaMes, 12, 0, 0));
+  if (
+    data.getUTCFullYear() !== ano ||
+    data.getUTCMonth() !== mes - 1 ||
+    data.getUTCDate() !== diaMes ||
+    data.getUTCDay() !== 1
+  ) {
+    return { ok: false, erro: "Semana inválida (use YYYY-MM-DD, uma segunda-feira)." };
+  }
   if (!Number.isInteger(dia) || dia < 0 || dia > 6) {
     return { ok: false, erro: "Dia inválido (0 a 6, segunda a domingo)." };
   }
+  if (!["manhã", "tarde", "integral", "plantão"].includes(turno)) {
+    return { ok: false, erro: "Turno inválido (manhã, tarde, integral ou plantão)." };
+  }
+  const [setor, pessoa] = await Promise.all([
+    um<Setor>("setores", "id", setorId),
+    um<Efetivo>("efetivo", "id", efetivoId),
+  ]);
+  if (!setor) return { ok: false, erro: "Setor não encontrado." };
+  if (!pessoa) return { ok: false, erro: "Registro do efetivo não encontrado." };
 
   try {
     const nova = await inserir<Escala>("escalas", {
       semana, dia, turno, setorId, efetivoId, observacao, criadoPor: operador.id,
     });
     await registrarAuditoria(operador, {
-      acao: "ADICIONAR_ESCALA", entidade: "escala", entidadeId: nova.id,
+      acao: "EMITIR_ESCALA", entidade: "escala", entidadeId: nova.id,
       resumo: `Plantão ${turno} (${semana}) adicionado`,
       detalhes: { semana, dia, turno, setorId, efetivoId }, ip: await ipAtual(),
     });

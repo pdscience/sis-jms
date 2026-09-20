@@ -22,7 +22,9 @@ export const POST: APIRoute = (ctx) =>
     try {
       if (ctx.url.searchParams.get("acao") === "status") {
         const body = await ctx.request.json().catch(() => null);
-        const r = await statusSetor(Number(body?.id), Boolean(body?.ativo));
+        const id = Number(body?.id);
+        if (!Number.isFinite(id)) return Response.json({ ok: false, erro: "Informe um id válido." }, { status: 400 });
+        const r = await statusSetor(id, Boolean(body?.ativo));
         return Response.json(r, { status: r.ok ? 200 : 400 });
       }
       const fd = await ctx.request.formData().catch(() => null);
@@ -30,7 +32,9 @@ export const POST: APIRoute = (ctx) =>
       const r = await salvarSetor(fd);
       return Response.json(r, { status: r.ok ? 200 : 400 });
     } catch (e) {
-      const msg = e instanceof Error && e.name === "AcessoNegado" ? e.message : "Falha na operação.";
-      return Response.json({ ok: false, erro: msg }, { status: 403 });
+      if (e instanceof Error && e.name === "AcessoNegado") {
+        return Response.json({ ok: false, erro: e.message }, { status: 403 });
+      }
+      return Response.json({ ok: false, erro: "Falha na operação." }, { status: 500 });
     }
   });
