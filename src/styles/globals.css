@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  /* Azul institucional PMRO (base: #1a5493 do portal pm.ro.gov.br) */
+  --color-campo-50: #eef5fc;
+  --color-campo-100: #d8e9f8;
+  --color-campo-200: #b3d2f0;
+  --color-campo-300: #7fb3e3;
+  --color-campo-400: #4a8bcf;
+  --color-campo-500: #2a6cb4;
+  --color-campo-600: #1a5493;
+  --color-campo-700: #154578;
+  --color-campo-800: #123a63;
+  --color-campo-900: #1a2353;
+  --color-campo-950: #111736;
+
+  /* Amarelo PMRO (base: #fcb900 / #ffdd00 do portal) */
+  --color-ouro-100: #fdf6d8;
+  --color-ouro-300: #ffe45e;
+  --color-ouro-500: #fcb900;
+  --color-ouro-700: #8a6d1a;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-documento: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-campo-50);
+  color: var(--color-campo-950);
+  font-feature-settings: "cv02", "cv03";
+}
+
+/* Barra de rolagem discreta para tabelas longas */
+.rolagem-fina::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.rolagem-fina::-webkit-scrollbar-thumb {
+  background: var(--color-campo-300);
+  border-radius: 9999px;
+}
+
+@media print {
+  .sem-impressao {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .area-impressao {
+    box-shadow: none !important;
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

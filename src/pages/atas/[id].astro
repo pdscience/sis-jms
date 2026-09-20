@@ -1,0 +1,13 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import AtaDetalheView from "../../components/AtaDetalheView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+const id: number = Number(Astro.params.id);
+if (!Number.isFinite(id)) return Astro.redirect("/atas");
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <AtaDetalheView client:load registroId={id} />
+</AppLayout>

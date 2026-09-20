@@ -1,0 +1,22 @@
+---
+import Base from "./Base.astro";
+import ShellAplicacao from "../components/ShellAplicacao.vue";
+
+export type UsuarioSessao = {
+  id: number;
+  nome: string;
+  papel: string;
+  posto: string | null;
+  crm: string | null;
+};
+
+const { usuario, contadores = [] } = Astro.props as {
+  usuario: UsuarioSessao;
+  contadores?: { rotulo: string; valor: number }[];
+};
+---
+<Base>
+  <ShellAplicacao client:load usuario={usuario} contadores={contadores} caminho={Astro.url.pathname}>
+    <slot />
+  </ShellAplicacao>
+</Base>

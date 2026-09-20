@@ -1,0 +1,5 @@
+---
+import { getSessionUser } from "../lib/auth-context.js";
+const usuario = await getSessionUser(Astro);
+return Astro.redirect(usuario ? "/painel" : "/login");
+---

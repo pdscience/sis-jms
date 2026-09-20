@@ -1,0 +1,14 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import MilitaresView from "../../components/MilitaresView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+
+const busca = Astro.url.searchParams.get("busca") ?? "";
+const situacao = Astro.url.searchParams.get("situacao") ?? "todas";
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <MilitaresView client:load busca={busca} situacao={situacao} />
+</AppLayout>

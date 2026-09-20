@@ -1,0 +1,14 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import DetalheAtestadoView from "../../components/DetalheAtestadoView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+if (layout.usuario.papel === "pessoal") return Astro.redirect("/atas");
+const id: number = Number(Astro.params.id);
+if (!Number.isFinite(id)) return Astro.redirect("/atestados");
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <DetalheAtestadoView client:load registroId={id} />
+</AppLayout>

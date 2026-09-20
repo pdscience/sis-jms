@@ -1,0 +1,14 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import AuditoriaView from "../../components/AuditoriaView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+if (layout.usuario.papel !== "admin") return Astro.redirect("/painel");
+
+const busca = Astro.url.searchParams.get("busca") ?? "";
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <AuditoriaView client:load busca={busca} />
+</AppLayout>

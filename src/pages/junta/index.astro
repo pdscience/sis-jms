@@ -1,0 +1,12 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import JuntaView from "../../components/JuntaView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+if (!["medico", "admin"].includes(layout.usuario.papel ?? "")) return Astro.redirect("/painel");
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <JuntaView client:load />
+</AppLayout>

@@ -1,0 +1,14 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import PrazosView from "../../components/PrazosView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+
+const nivel = Astro.url.searchParams.get("nivel") ?? "todos";
+const busca = Astro.url.searchParams.get("busca") ?? "";
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <PrazosView client:load nivel={nivel} busca={busca} />
+</AppLayout>

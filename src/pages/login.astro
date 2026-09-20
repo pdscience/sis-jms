@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+import FormularioLogin from "../components/FormularioLogin.vue";
+import { getSessionUser } from "../lib/auth-context.js";
+import { ensureSeed } from "../lib/seed.js";
+import { isDbAvailable } from "../db/index.js";
+
+if (isDbAvailable()) {
+  try { await ensureSeed(); } catch { /* sem banco: login mostra erro amigável */ }
+}
+const usuario = await getSessionUser(Astro);
+if (usuario) return Astro.redirect("/painel");
+const falha = Astro.url.searchParams.get("falha");
+---
+<Base titulo="Entrar | SIS-JMS">
+  <main class="grid min-h-screen lg:grid-cols-[1.05fr_0.95fr]">
+    <section class="relative hidden flex-col justify-between overflow-hidden bg-campo-900 px-12 py-14 text-campo-100 lg:flex">
+      <div class="relative">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.32em] text-ouro-300">Sistema de Inspeção Médica de Saúde</p>
+        <h1 class="mt-4 max-w-xl text-4xl font-semibold leading-tight text-white">
+          Junta Médica de Saúde — fluxo digital, histórico centralizado e controle rigoroso de prazos.
+        </h1>
+        <p class="mt-4 max-w-lg text-sm leading-relaxed text-campo-200">
+          MVP focado na eliminação do papel, na centralização do histórico médico do policial militar e no acompanhamento de afastamentos, agregação e homologação de atas.
+        </p>
+      </div>
+      <p class="relative mt-10 text-xs text-campo-400">
+        Secretaria da Junta Médica de Saúde e Seção de Pessoal acessam somente o que lhes compete. Toda ação gera registro imutável de auditoria.
+      </p>
+    </section>
+    <section class="flex items-center justify-center bg-campo-50 px-6 py-14">
+      <div class="w-full max-w-md">
+        {falha === "1" && (
+          <div class="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+            <p class="font-semibold">Sessão expirada. Faça login novamente.</p>
+          </div>
+        )}
+        {!isDbAvailable() && (
+          <div class="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+            Banco de dados indisponível — configure DATABASE_URL para autenticar.
+          </div>
+        )}
+        <div class="rounded-2xl border border-campo-200 bg-white p-6 shadow-[0_18px_40px_rgba(22,35,26,0.08)]">
+          <FormularioLogin client:load />
+        </div>
+        <p class="mt-5 text-center text-sm text-campo-600">
+          É policial militar e precisa enviar um atestado? <a href="/envio-atestado" class="font-semibold text-campo-800 underline">Enviar sem login</a>
+        </p>
+      </div>
+    </section>
+  </main>
+</Base>

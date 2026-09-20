@@ -1,0 +1,18 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "../styles/globals.css";
+const { titulo = "SIS-JMS | Junta Médica de Saúde" } = Astro.props;
+---
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Sistema de gestão de atestados, inspeções de saúde, controle de afastamentos e emissão de atas para a Junta Médica de Saúde." />
+    <link rel="stylesheet" href="/estilos.css" />
+    <ClientRouter />
+    <title>{titulo}</title>
+  </head>
+  <body class="bg-campo-50 text-campo-950 antialiased">
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,34 @@
+---
+import AppLayout from "../../../layouts/AppLayout.astro";
+import Card from "../../../components/Card.vue";
+import CabecalhoPagina from "../../../components/CabecalhoPagina.vue";
+import FormularioMilitar from "../../../components/FormularioMilitar.vue";
+import { dadosLayout } from "../../../lib/layout-data.js";
+import { comSessaoAstro } from "../../../lib/auth-context.js";
+import { isDbAvailable } from "../../../db/index.js";
+import { perfilMilitar } from "../../../server/consultas.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+if (!["admin", "secretaria"].includes(layout.usuario.papel ?? "")) return Astro.redirect(`/militares/${Astro.params.id}`);
+
+let inicial = null;
+if (isDbAvailable()) {
+  try {
+    const dados = await comSessaoAstro(Astro, () => perfilMilitar(Number(Astro.params.id)));
+    if (dados) {
+      const m = dados.militar;
+      inicial = { id: m.id, re: m.re, cpf: m.cpf, nome: m.nome, nomeGuerra: m.nomeGuerra, postoGraduacao: m.postoGraduacao, quadro: m.quadro, om: m.om, funcao: m.funcao, dataNascimento: m.dataNascimento, sexo: m.sexo, tipoSanguineo: m.tipoSanguineo, telefone: m.telefone, email: m.email, dataInclusao: m.dataInclusao, situacao: m.situacao, observacoes: m.observacoes };
+    }
+  } catch { inicial = null; }
+}
+if (!inicial) return Astro.redirect("/militares");
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <CabecalhoPagina
+    titulo="Editar cadastro"
+    descricao="Atualize os dados funcionais do militar."
+    migalhas={[{ rotulo: "Policiais Militares", href: "/militares" }, { rotulo: inicial.nomeGuerra ?? inicial.nome ?? "Editar" }]}
+  />
+  <Card><FormularioMilitar client:load inicial={inicial} /></Card>
+</AppLayout>

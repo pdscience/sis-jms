@@ -1,0 +1,12 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import UsuariosView from "../../components/UsuariosView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+if (layout.usuario.papel !== "admin") return Astro.redirect("/painel");
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <UsuariosView client:load />
+</AppLayout>

@@ -1,0 +1,15 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import AtasView from "../../components/AtasView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+
+const busca = Astro.url.searchParams.get("busca") ?? "";
+const parecer = Astro.url.searchParams.get("parecer") ?? "todos";
+const status = Astro.url.searchParams.get("status") ?? "todos";
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <AtasView client:load busca={busca} parecer={parecer} status={status} />
+</AppLayout>

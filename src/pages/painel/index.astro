@@ -1,0 +1,11 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import PainelView from "../../components/PainelView.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <PainelView client:load />
+</AppLayout>

@@ -1,0 +1,76 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import Card from "../../components/Card.vue";
+import CabecalhoPagina from "../../components/CabecalhoPagina.vue";
+import FormularioParecer from "../../components/FormularioParecer.vue";
+import { dadosLayout } from "../../lib/layout-data.js";
+import { comSessaoAstro } from "../../lib/auth-context.js";
+import { isDbAvailable } from "../../db/index.js";
+import { detalheAtestado, listaMilitaresSimples, perfilMilitar } from "../../server/consultas.js";
+
+const layout = await dadosLayout(Astro);
+if (!layout) return Astro.redirect("/login?falha=1");
+if (!["medico", "admin"].includes(layout.usuario.papel ?? "")) return Astro.redirect("/junta");
+
+const atestadoId = Astro.url.searchParams.get("atestadoId");
+const militarId = Astro.url.searchParams.get("militarId");
+
+type MilitarResumido = { id: number; re: string; nome: string; nomeGuerra: string | null; postoGraduacao: string; om: string };
+type ContextoAtestado = { id: number; protocolo: string; emitente: string | null; dataEmissao: string; diasSugeridos: number | null; cid: string | null; descricao: string | null };
+type EstadoParecer = {
+  militares: MilitarResumido[];
+  militarSelecionado: MilitarResumido | null;
+  contextoAtestado: ContextoAtestado | null;
+  acumulado: number;
+  chaveContexto: string;
+};
+
+const estadoVazio: EstadoParecer = { militares: [], militarSelecionado: null, contextoAtestado: null, acumulado: 0, chaveContexto: "livre" };
+
+async function carregarEstado(): Promise<EstadoParecer> {
+  const base = await listaMilitaresSimples();
+  const estado: EstadoParecer = {
+    militares: base.map((m) => ({ id: m.id, re: m.re, nome: m.nome, nomeGuerra: m.nomeGuerra, postoGraduacao: m.postoGraduacao, om: m.om })),
+    militarSelecionado: null, contextoAtestado: null, acumulado: 0, chaveContexto: "livre",
+  };
+  if (atestadoId) {
+    const caso = await detalheAtestado(Number(atestadoId));
+    if (caso?.militar) {
+      estado.chaveContexto = `atestado-${caso.atestado.id}`;
+      estado.militarSelecionado = { id: caso.militar.id, re: caso.militar.re, nome: caso.militar.nome, nomeGuerra: caso.militar.nomeGuerra, postoGraduacao: caso.militar.postoGraduacao, om: caso.militar.om };
+      estado.contextoAtestado = { id: caso.atestado.id, protocolo: caso.atestado.protocolo, emitente: caso.atestado.emitente, dataEmissao: caso.atestado.dataEmissao, diasSugeridos: caso.atestado.diasSugeridos, cid: caso.atestado.cid, descricao: caso.atestado.descricao };
+      estado.acumulado = caso.resumo?.diasAcumulados ?? 0;
+    }
+  } else if (militarId) {
+    const perfil = await perfilMilitar(Number(militarId));
+    if (perfil) {
+      estado.chaveContexto = `militar-${perfil.militar.id}`;
+      estado.militarSelecionado = { id: perfil.militar.id, re: perfil.militar.re, nome: perfil.militar.nome, nomeGuerra: perfil.militar.nomeGuerra, postoGraduacao: perfil.militar.postoGraduacao, om: perfil.militar.om };
+      estado.acumulado = perfil.resumo?.diasAcumulados ?? 0;
+    }
+  }
+  return estado;
+}
+
+const estado: EstadoParecer = isDbAvailable()
+  ? await comSessaoAstro(Astro, () => carregarEstado()).catch(() => estadoVazio)
+  : estadoVazio;
+const { militares, militarSelecionado, contextoAtestado, acumulado, chaveContexto } = estado;
+---
+<AppLayout usuario={layout.usuario} contadores={layout.contadores}>
+  <CabecalhoPagina
+    titulo="Formulário padronizado de inspeção de saúde"
+    descricao="Parecer oficial, período concedido, enquadramento legal e registro clínico sigiloso. A ata é numerada e gerada automaticamente ao concluir."
+    migalhas={[{ rotulo: "Avaliação médica", href: "/junta" }, { rotulo: "Parecer" }]}
+  >
+    <Fragment slot="acoes">
+      <a href="/junta" class="rounded-lg border border-campo-300 bg-white px-4 py-2 text-sm font-semibold text-campo-800 hover:bg-campo-50">Voltar à pauta</a>
+    </Fragment>
+  </CabecalhoPagina>
+  <Card
+    titulo={militarSelecionado ? `Inspeção de ${militarSelecionado.postoGraduacao} ${militarSelecionado.nomeGuerra ?? militarSelecionado.nome}` : "Nova inspeção de saúde"}
+    descricao={`Médico avaliador: ${layout.usuario.nome}${layout.usuario.crm ? ` · ${layout.usuario.crm}` : ""}`}
+  >
+    <FormularioParecer client:load militares={militares} militarSelecionado={militarSelecionado} atestado={contextoAtestado} acumuladoAtual={acumulado} chaveContexto={chaveContexto} />
+  </Card>
+</AppLayout>
