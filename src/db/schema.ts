@@ -143,3 +143,10 @@ export type Escala = {
   id: number; semana: string; dia: number; turno: string; setorId: number;
   efetivoId: number; observacao: string | null; criadoPor: number | null; criadoEm: string;
 };
+export type Boletim = {
+  id: number; numero: number; ano: number; semana: string; status: string;
+  secao2: string | null; secao3: string | null; secao4: string | null;
+  escalaSnapshot: unknown | null;
+  criadoPor: number | null; criadoEm: string; atualizadoEm: string;
+  publicadoPor: number | null; publicadoEm: string | null;
+};

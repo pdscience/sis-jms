@@ -2,6 +2,7 @@ import {
   NIVEL_LABEL,
   PARECER_LABEL,
   STATUS_ATESTADO_LABEL,
+  STATUS_BOLETIM_LABEL,
   STATUS_INSPECAO_LABEL,
   type NivelAlerta,
 } from "@/lib/dominio";
@@ -29,6 +30,13 @@ export const tomNivel = (nivel: NivelAlerta): Tom =>
 
 export const tomStatusAta = (status: string): Tom =>
   ({ rascunho: "neutro", emitida: "ambar", homologada: "azul", publicada: "verde" })[status] as Tom;
+
+export const tomStatusBoletim = (status: string): Tom =>
+  ({ rascunho: "neutro", publicado: "verde" })[status] as Tom;
+
+export function rotuloStatusBoletim(status: string) {
+  return STATUS_BOLETIM_LABEL[status] ?? status;
+}
 
 export const classeInput =
   "w-full rounded-lg border border-campo-300 bg-white px-3 py-2 text-sm text-campo-900 outline-none transition placeholder:text-campo-400 focus:border-campo-600 focus:ring-2 focus:ring-campo-600/15";
