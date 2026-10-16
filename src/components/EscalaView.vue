@@ -119,6 +119,7 @@ async function remover(id: number) {
       <a :class="classeBotaoSecundario" :href="`/escala?semana=${semanaAnterior}`">← Semana anterior</a>
       <a :class="classeBotaoSecundario" :href="`/escala?semana=${semanaSeguinte}`">Próxima semana →</a>
       <button type="button" :class="classeBotaoSecundario" @click="imprimir"><Icone nome="impressora" className="h-4 w-4" /> Imprimir</button>
+      <a :class="classeBotaoSecundario" :href="`/boletim/novo?semana=${semana}`"><Icone nome="documento" className="h-4 w-4" /> Gerar boletim</a>
       <button v-if="podeAdmin && !mostrandoForm" type="button" :class="classeBotaoPrimario" @click="mostrandoForm = true"><Icone nome="mais" className="h-4 w-4" /> Novo plantão</button>
     </template>
   </CabecalhoPagina>

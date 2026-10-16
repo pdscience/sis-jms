@@ -20,6 +20,7 @@ const ITENS: Item[] = [
   { href: "/efetivo", rotulo: "Efetivo", icone: "usuario", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Efetivo" },
   { href: "/escala", rotulo: "Escala semanal", icone: "calendario", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Efetivo" },
   { href: "/relatorios", rotulo: "Relatórios P1", icone: "balanco", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Publicações" },
+  { href: "/boletim", rotulo: "Boletim interno", icone: "documento", papeis: ["admin", "medico", "secretaria", "pessoal"], grupo: "Publicações" },
   { href: "/auditoria", rotulo: "Trilha de auditoria", icone: "trilha", papeis: ["admin"], grupo: "Administração" },
   { href: "/usuarios", rotulo: "Usuários e perfis", icone: "usuario", papeis: ["admin"], grupo: "Administração" },
 ];
