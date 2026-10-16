@@ -8,3 +8,4 @@ dist/
 public/estilos.css
 tsconfig.tsbuildinfo
 .wrangler/
+.worktrees/
