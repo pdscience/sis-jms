@@ -106,6 +106,17 @@ export const STATUS_CONVOCACAO_LABEL: Record<string, string> = {
   cancelada: "Cancelada",
 };
 
+export const STATUS_BOLETIM_LABEL: Record<string, string> = {
+  rascunho: "Rascunho",
+  publicado: "Publicado",
+};
+
+export const SECOES_BOLETIM = [
+  { campo: "secao2", titulo: "II – ORDENS DE SERVIÇO" },
+  { campo: "secao3", titulo: "III – ASSUNTOS ADMINISTRATIVOS" },
+  { campo: "secao4", titulo: "IV – COMUNICADOS" },
+] as const;
+
 export const TIPO_INSPECAO_LABEL: Record<string, string> = {
   inicial: "Inspeção inicial",
   reavaliacao: "Reavaliação",
